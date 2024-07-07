@@ -1,0 +1,8 @@
+FROM nginx:latest
+# // This creates an image of nginx distribution[1]
+COPY public /usr/share/nginx/html   
+# //This copies the public folder to the shared nginx folder to host it on a particular port
+EXPOSE 80 
+# //This exposes the port 80 to the html requests for the localhost
+CMD ["nginx", "-g", "daemon off;"]   
+# // This command runs the default nginx container 						with the config of daemon off to run nginx in 							foreground
