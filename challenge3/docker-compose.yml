@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mariadb:latest
+    container_name: challenge3-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+
+  node-service:
+    build: ./api
+    container_name: challenge3-node-service
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx
+    container_name: challenge3-nginx
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+    depends_on:
+      - node-service
+
+networks:
+  app-network:
+    driver: bridge
